@@ -34,6 +34,8 @@ type baseSession struct {
 	system bool
 	master bool
 
+	initialVolume float32
+
 	// used by Key(), needs to be set by child
 	name string
 

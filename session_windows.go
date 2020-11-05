@@ -79,6 +79,8 @@ func newWCASession(
 		s.humanReadableDesc = fmt.Sprintf("%s (pid %d)", s.processName, s.pid)
 	}
 
+	s.initialVolume = s.GetVolume()
+
 	// use a self-identifying session name e.g. deej.sessions.chrome
 	s.logger = logger.Named(strings.TrimSuffix(s.Key(), ".exe"))
 	s.logger.Debugw(sessionCreationLogMessage, "session", s)
@@ -165,20 +167,21 @@ func (s *masterSession) GetVolume() float32 {
 }
 
 func (s *masterSession) SetVolume(v float32) error {
+	adjustedVolume := s.initialVolume + v
 	if s.stale {
 		s.logger.Warnw("Session expired because default device has changed, triggering session refresh")
 		return errRefreshSessions
 	}
 
-	if err := s.volume.SetMasterVolumeLevelScalar(v, s.eventCtx); err != nil {
+	if err := s.volume.SetMasterVolumeLevelScalar(adjustedVolume, s.eventCtx); err != nil {
 		s.logger.Warnw("Failed to set session volume",
 			"error", err,
-			"volume", v)
+			"volume", adjustedVolume)
 
 		return fmt.Errorf("adjust session volume: %w", err)
 	}
 
-	s.logger.Debugw("Adjusting session volume", "to", fmt.Sprintf("%.2f", v))
+	s.logger.Debugw("Adjusting session volume", "to", fmt.Sprintf("%.2f", adjustedVolume))
 
 	return nil
 }
