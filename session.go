@@ -9,6 +9,7 @@ import (
 // Session represents a single addressable audio session
 type Session interface {
 	GetVolume() float32
+	GetInitialVolume() float32
 	SetVolume(v float32) error
 
 	// TODO: future mute support
@@ -53,4 +54,8 @@ func (s *baseSession) Key() string {
 	}
 
 	return strings.ToLower(s.name)
+}
+
+func (s *baseSession) GetInitialVolume() float32 {
+	return s.initialVolume
 }

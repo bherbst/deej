@@ -248,9 +248,10 @@ func (m *sessionMap) handleSliderMoveEvent(event SliderMoveEvent) {
 
 			// iterate all matching sessions and adjust the volume of each one
 			for _, session := range sessions {
-				volumeDelta := math.Abs(float64(session.GetVolume() - event.PercentValue))
+				targetVolume := session.GetInitialVolume() + event.PercentValue
+				volumeDelta := math.Abs(float64(session.GetVolume() - targetVolume))
 				if volumeDelta > 0.005 {
-					if err := session.SetVolume(event.PercentValue); err != nil {
+					if err := session.SetVolume(targetVolume); err != nil {
 						m.logger.Warnw("Failed to set target session volume", "error", err)
 						adjustmentFailed = true
 					}
