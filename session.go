@@ -11,6 +11,7 @@ type Session interface {
 	GetVolume() float32
 	GetInitialVolume() float32
 	SetVolume(v float32) error
+	SetInitialVolume(float32)
 
 	// TODO: future mute support
 	// GetMute() bool
@@ -58,4 +59,8 @@ func (s *baseSession) Key() string {
 
 func (s *baseSession) GetInitialVolume() float32 {
 	return s.initialVolume
+}
+
+func (s *baseSession) SetInitialVolume(v float32) {
+	s.initialVolume = v
 }

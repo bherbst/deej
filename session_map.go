@@ -17,8 +17,9 @@ type sessionMap struct {
 	deej   *Deej
 	logger *zap.SugaredLogger
 
-	m    map[string][]Session
-	lock sync.Locker
+	m              map[string][]Session
+	initialVolumes map[string]float32
+	lock           sync.Locker
 
 	sessionFinder SessionFinder
 
@@ -62,11 +63,12 @@ func newSessionMap(deej *Deej, logger *zap.SugaredLogger, sessionFinder SessionF
 	logger = logger.Named("sessions")
 
 	m := &sessionMap{
-		deej:          deej,
-		logger:        logger,
-		m:             make(map[string][]Session),
-		lock:          &sync.Mutex{},
-		sessionFinder: sessionFinder,
+		deej:           deej,
+		logger:         logger,
+		m:              make(map[string][]Session),
+		initialVolumes: make(map[string]float32),
+		lock:           &sync.Mutex{},
+		sessionFinder:  sessionFinder,
 	}
 
 	logger.Debug("Created session map instance")
@@ -331,6 +333,13 @@ func (m *sessionMap) add(value Session) {
 	defer m.lock.Unlock()
 
 	key := value.Key()
+
+	initialVolume, ok := m.initialVolumes[key]
+	if ok {
+		value.SetInitialVolume(initialVolume)
+	} else {
+		m.initialVolumes[key] = initialVolume
+	}
 
 	existing, ok := m.m[key]
 	if !ok {
