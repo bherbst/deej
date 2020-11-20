@@ -105,6 +105,7 @@ func newMasterSession(
 	s.master = true
 	s.name = key
 	s.humanReadableDesc = key
+	s.initialVolume = s.GetVolume()
 
 	s.logger.Debugw(sessionCreationLogMessage, "session", s)
 
