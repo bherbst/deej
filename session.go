@@ -28,7 +28,7 @@ const (
 	sessionCreationLogMessage = "Created audio session instance"
 
 	// format this with s.humanReadableDesc and whatever the current volume is
-	sessionStringFormat = "<session: %s, vol: %.2f>"
+	sessionStringFormat = "<session: %s, vol: %.2f, initVol: %.2f>"
 )
 
 type baseSession struct {
