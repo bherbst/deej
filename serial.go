@@ -41,7 +41,7 @@ type SliderMoveEvent struct {
 	PercentValue float32
 }
 
-var expectedLinePattern = regexp.MustCompile(`^\d\.?\d*(\|\d\.?\d*)*\r\n$`)
+var expectedLinePattern = regexp.MustCompile(`^-?\d\.?\d*(\|-?\d\.?\d*)*\r\n$`)
 
 // NewSerialIO creates a SerialIO instance that uses the provided deej
 // instance's connection info to establish communications with the arduino chip
